@@ -3,7 +3,7 @@
 个股研究数据库 Web 界面 - Railway 极简版
 """
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import json, gzip, os
 from pathlib import Path
 
