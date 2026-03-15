@@ -31,10 +31,17 @@ def dashboard():
     top = sorted([{'code': c, **d} for c, d in stocks.items()], 
                  key=lambda x: x['mention_count'], reverse=True)[:20]
     for i, s in enumerate(top): s['rank'] = i + 1
+    
+    # 计算文章数（安全方式）
+    articles = set()
+    for code, s in stocks.items():
+        for a in s.get('articles', []):
+            articles.add(f"{code}_{a.get('article_id', '')}")
+    
     return render_template('dashboard.html', 
         total_stocks=len(stocks),
         total_mentions=sum(s.get('mention_count', 0) for s in stocks.values()),
-        total_articles=len(set(a['article_id'] for s in stocks.values() for a in s.get('articles', []))),
+        total_articles=len(articles),
         update_time=Path(SEARCH_INDEX_FILE).stat().st_mtime,
         top_20=top)
 
