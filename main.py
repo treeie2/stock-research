@@ -25,8 +25,8 @@ else:
     DATA_DIR = Path('/home/admin/openclaw/workspace/stocks/research_db')
 
 MENTIONS_FILE = DATA_DIR / 'sentiment' / 'company_mentions.json'
-# Railway 使用 gzip 压缩文件（节省空间）
-SEARCH_INDEX_FILE = DATA_DIR / 'sentiment' / 'search_index_v2.json.gz'
+# Railway 使用精简版数据（3MB vs 282MB，避免 OOM）
+SEARCH_INDEX_FILE = DATA_DIR / 'sentiment' / 'search_index_lite.json.gz'
 
 # ============== 加载数据 ==============
 print("📋 加载数据...")

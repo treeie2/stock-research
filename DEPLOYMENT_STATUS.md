@@ -1,71 +1,63 @@
 # 🚀 Railway 部署状态
 
 ## 更新时间
-2026-03-15 20:12
+2026-03-15 20:20
 
 ## 当前状态
 
 ### ✅ 已完成
-- [x] Web v3.0 代码已复制到 `railway-deploy/main.py`
-- [x] Git 提交：`Web v3.0: 详情文字显示、全文搜索、概念标签链接`
-- [x] 推送到 GitHub：https://github.com/treeie2/stock-research
-- [x] Commit ID: `8da24a6`
+- [x] 修改代码支持 Railway 环境（相对路径）
+- [x] 添加 gzip 压缩支持（282M → 28M）
+- [x] 创建 .gitignore 排除未压缩文件
+- [x] Git 提交：`05e599d`
+- [x] 推送到 GitHub
 
 ### ⏳ 部署中
-- [ ] Railway 自动部署（GitHub 推送触发）
-- [ ] 部署状态：404 - "The train has not arrived at the station"
+- [ ] Railway 自动重新部署
+- [ ] 验证数据加载成功
 
-## 问题分析
+## 技术修改
 
-Railway 返回 404 错误，可能原因：
-1. **部署尚未完成** - Railway 需要 2-5 分钟构建和部署
-2. **项目未正确关联** - Railway 项目可能未关联到 GitHub 仓库
-3. **部署被暂停** - 免费额度用尽或项目被暂停
+### 路径处理
+```python
+# Railway 环境
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    DATA_DIR = Path(__file__).parent / 'data'
+else:
+    # 本地环境
+    DATA_DIR = Path('/home/admin/openclaw/workspace/stocks/research_db')
+```
 
-## 解决方案
+### Gzip 压缩
+- 原始文件：282M（超过 GitHub 100M 限制）
+- 压缩后：28M ✅
+- 代码自动检测并解压
 
-### 方案 A：等待自动部署（推荐）
-Railway 通常在 GitHub 推送后 2-5 分钟内自动部署。
-
-检查部署状态：
-1. 访问 https://railway.app/
-2. 登录 GitHub 账号
-3. 找到 `stock-research` 项目
-4. 查看 Deployments 标签页
-
-### 方案 B：手动触发重新部署
-1. 登录 Railway
-2. 进入 `stock-research` 项目
-3. 点击 **Deployments** → **Deploy latest commit**
-4. 或点击 **Restart** 重启服务
-
-### 方案 C：重新关联项目
-如果项目未关联：
-1. Railway → New Project → Deploy from GitHub repo
-2. 选择 `treeie2/stock-research`
-3. 选择 `main` 分支
-4. 点击 Deploy
+## 文件结构
+```
+railway-deploy/
+├── main.py                    # Flask 应用
+├── requirements.txt           # Flask + Gunicorn
+├── Procfile                   # 启动命令
+├── data/
+│   └── sentiment/
+│       └── search_index_v2.json.gz  # 压缩数据
+└── .gitignore                 # 排除未压缩文件
+```
 
 ## 访问地址
 
 部署成功后：
-- **生产环境**: https://stock-research-production.up.railway.app
-- **自定义域名**: （如有配置）
+```
+https://stock-research-production.up.railway.app
+```
 
 ## 本地测试
-
-在等待部署期间，可继续使用本地版本：
 ```
 http://localhost:5001/
 ```
 
 ## 下一步
-
-1. ⏳ 等待 Railway 部署完成（约 5 分钟）
-2. ✅ 验证生产环境访问
-3. ✅ 测试搜索、详情、概念链接功能
-4. 📋 配置每日 16:00 市场数据更新 cron
-
----
-
-**备注**: Railway 免费额度 $5/月，当前使用约 $2-3/月。
+1. ⏳ 等待 Railway 重新部署（2-5 分钟）
+2. ✅ 验证数据加载
+3. ✅ 测试所有功能
