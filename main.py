@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-个股研究数据库 Web 界面 v3.0
+个股研究数据库 Web 界面 v3.0 - Railway 兼容版
 - 显示详情文字
 - 全文搜索
 - 概念标签链接
@@ -14,24 +14,55 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# ============== 数据路径 ==============
-DATA_DIR = Path('/home/admin/openclaw/workspace/stocks/research_db')
+# ============== 数据路径（Railway 兼容） ==============
+# Railway 环境下使用相对路径（数据文件与 main.py 同目录）
+# 本地环境下使用绝对路径
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    # Railway 环境
+    DATA_DIR = Path(__file__).parent / 'data'
+else:
+    # 本地环境
+    DATA_DIR = Path('/home/admin/openclaw/workspace/stocks/research_db')
+
 MENTIONS_FILE = DATA_DIR / 'sentiment' / 'company_mentions.json'
-SEARCH_INDEX_FILE = DATA_DIR / 'sentiment' / 'search_index_v2.json'
+# Railway 使用 gzip 压缩文件（节省空间）
+SEARCH_INDEX_FILE = DATA_DIR / 'sentiment' / 'search_index_v2.json.gz'
 
 # ============== 加载数据 ==============
 print("📋 加载数据...")
+print(f"   数据目录：{DATA_DIR}")
 
-# 加载搜索索引（主数据源）
-with open(SEARCH_INDEX_FILE, 'r', encoding='utf-8') as f:
-    search_index = json.load(f)
+try:
+    # 加载搜索索引（主数据源）- 支持 gzip 压缩
+    if SEARCH_INDEX_FILE.suffix == '.gz':
+        import gzip
+        with gzip.open(SEARCH_INDEX_FILE, 'rt', encoding='utf-8') as f:
+            search_index = json.load(f)
+    else:
+        # 尝试 .gz 文件，如果不存在则用普通文件
+        gz_file = SEARCH_INDEX_FILE.with_suffix('.json.gz')
+        if gz_file.exists():
+            import gzip
+            with gzip.open(gz_file, 'rt', encoding='utf-8') as f:
+                search_index = json.load(f)
+            print("  📦 使用 gzip 压缩数据")
+        else:
+            with open(SEARCH_INDEX_FILE, 'r', encoding='utf-8') as f:
+                search_index = json.load(f)
 
-stocks_data = search_index.get('stocks', {})
-concepts_data = search_index.get('concepts', {})
-fulltext_data = search_index.get('fulltext', {})
+    stocks_data = search_index.get('stocks', {})
+    concepts_data = search_index.get('concepts', {})
+    fulltext_data = search_index.get('fulltext', {})
 
-print(f"  ✅ 加载 {len(stocks_data)} 只股票")
-print(f"  ✅ 加载 {len(fulltext_data)} 个全文索引词")
+    print(f"  ✅ 加载 {len(stocks_data)} 只股票")
+    print(f"  ✅ 加载 {len(fulltext_data)} 个全文索引词")
+except FileNotFoundError as e:
+    print(f"  ⚠️ 数据文件未找到：{e}")
+    print("  💡 请确保数据文件已上传到 Railway 项目")
+    # 使用空数据继续运行
+    stocks_data = {}
+    concepts_data = {}
+    fulltext_data = {}
 
 # ============== HTML 模板 ==============
 
