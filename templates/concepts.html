@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>概念大全</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white shadow p-4">
+        <div class="max-w-7xl mx-auto flex gap-4">
+            <a href="/" class="text-blue-600">仪表板</a>
+            <a href="/stocks">股票列表</a>
+            <a href="/concepts" class="font-bold">概念大全</a>
+            <a href="/search">搜索</a>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">🏷️ 概念大全</h1>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for c in concepts %}
+            <a href="/concept/{{ c.name }}" class="bg-white p-4 rounded shadow hover:shadow-lg">
+                <div class="font-bold text-blue-800">{{ c.name }}</div>
+                <div class="text-sm text-gray-500">{{ c.count }} 只股票</div>
+            </a>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
