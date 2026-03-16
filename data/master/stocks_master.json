@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "update_time": "2026-03-15T13:36:59.883156",
-  "total_stocks": 83,
+  "update_time": "2026-03-16T08:06:43.548644",
+  "total_stocks": 108,
   "stocks": [
     {
       "code": "601869",
@@ -759,9 +759,9 @@
       ],
       "list_date": "",
       "status": "active",
-      "mention_count": 16,
+      "mention_count": 17,
       "first_mention": "",
-      "last_mention": "",
+      "last_mention": "2026-03-16T08:06:43.548641",
       "data_completeness": {
         "market_data": false,
         "financials": false,
@@ -1215,9 +1215,9 @@
       ],
       "list_date": "",
       "status": "active",
-      "mention_count": 9,
+      "mention_count": 10,
       "first_mention": "",
-      "last_mention": "",
+      "last_mention": "2026-03-16T08:06:43.548620",
       "data_completeness": {
         "market_data": false,
         "financials": false,
@@ -1924,6 +1924,506 @@
       "mention_count": 2,
       "first_mention": "",
       "last_mention": "",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "300243",
+      "name": "瑞丰高材",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548553",
+      "last_mention": "2026-03-16T08:06:43.548572",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "300395",
+      "name": "菲利华",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548575",
+      "last_mention": "2026-03-16T08:06:43.548576",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "600183",
+      "name": "生益科技",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548578",
+      "last_mention": "2026-03-16T08:06:43.548579",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "688519",
+      "name": "南亚新材",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548580",
+      "last_mention": "2026-03-16T08:06:43.548581",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002463",
+      "name": "沪电股份",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548583",
+      "last_mention": "2026-03-16T08:06:43.548584",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "300476",
+      "name": "胜宏科技",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548586",
+      "last_mention": "2026-03-16T08:06:43.548587",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002916",
+      "name": "深南电路",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548588",
+      "last_mention": "2026-03-16T08:06:43.548589",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002165",
+      "name": "红宝丽",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548591",
+      "last_mention": "2026-03-16T08:06:43.548592",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "300641",
+      "name": "正丹股份",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548593",
+      "last_mention": "2026-03-16T08:06:43.548594",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002669",
+      "name": "康达新材",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548596",
+      "last_mention": "2026-03-16T08:06:43.548597",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002407",
+      "name": "多氟多",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548598",
+      "last_mention": "2026-03-16T08:06:43.548599",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002326",
+      "name": "永太科技",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548601",
+      "last_mention": "2026-03-16T08:06:43.548602",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002455",
+      "name": "百川股份",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548603",
+      "last_mention": "2026-03-16T08:06:43.548604",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "600873",
+      "name": "梅花生物",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548606",
+      "last_mention": "2026-03-16T08:06:43.548607",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "600299",
+      "name": "安迪苏",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548608",
+      "last_mention": "2026-03-16T08:06:43.548609",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002637",
+      "name": "赞宇科技",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548611",
+      "last_mention": "2026-03-16T08:06:43.548612",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "688639",
+      "name": "华恒生物",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548613",
+      "last_mention": "2026-03-16T08:06:43.548614",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002360",
+      "name": "同德化工",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548615",
+      "last_mention": "2026-03-16T08:06:43.548616",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "603062",
+      "name": "麦加芯彩",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548618",
+      "last_mention": "2026-03-16T08:06:43.548619",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "003002",
+      "name": "壶化股份",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548622",
+      "last_mention": "2026-03-16T08:06:43.548623",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "002971",
+      "name": "和远气体",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548625",
+      "last_mention": "2026-03-16T08:06:43.548626",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "600866",
+      "name": "星湖科技",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548629",
+      "last_mention": "2026-03-16T08:06:43.548630",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "603890",
+      "name": "醋化股份",
+      "name_en": "",
+      "market": "SH",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548632",
+      "last_mention": "2026-03-16T08:06:43.548633",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "301220",
+      "name": "亚香股份",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548636",
+      "last_mention": "2026-03-16T08:06:43.548637",
+      "data_completeness": {
+        "market_data": false,
+        "financials": false,
+        "valuation": false,
+        "sentiment": true
+      }
+    },
+    {
+      "code": "301179",
+      "name": "泽宇智能",
+      "name_en": "",
+      "market": "SZ",
+      "industry_sw": "",
+      "industry_citic": "",
+      "concept_tags": [],
+      "list_date": "",
+      "status": "active",
+      "mention_count": 1,
+      "first_mention": "2026-03-16T08:06:43.548642",
+      "last_mention": "2026-03-16T08:06:43.548643",
       "data_completeness": {
         "market_data": false,
         "financials": false,
