@@ -1,82 +1,591 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>{{ name }} ({{ code }})</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ name }} ({{ code }}) - 智能投研平台</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #7b2fff;
+            --accent: #ff00ff;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-glass: rgba(18, 18, 26, 0.8);
+            --border: rgba(0, 240, 255, 0.2);
+            --text: #e0e0e0;
+            --text-dim: #8888aa;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 动态背景 */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(123, 47, 255, 0.15) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        /* 导航栏 */
+        .nav-glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-link {
+            color: var(--text-dim);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* 卡片 */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        
+        .card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+        }
+        
+        /* 标题 */
+        .title-tech {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 标签 */
+        .tag {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .tag:hover {
+            background: rgba(0, 240, 255, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tag-secondary {
+            background: rgba(123, 47, 255, 0.1);
+            border-color: rgba(123, 47, 255, 0.3);
+            color: var(--secondary);
+        }
+        
+        .tag-secondary:hover {
+            background: rgba(123, 47, 255, 0.2);
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(123, 47, 255, 0.3);
+        }
+        
+        /* 数据展示 */
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* 内容区块 */
+        .content-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        /* 催化剂/洞察 多来源显示 */
+        .source-block {
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid var(--primary);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border-radius: 0 12px 12px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .source-block:hover {
+            background: rgba(0, 240, 255, 0.05);
+            border-left-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+        
+        .source-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .source-content {
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        
+        .source-divider {
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+            margin: 20px 0;
+        }
+        
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+        /* 文章列表 */
+        .article-item {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .article-item:hover {
+            background: rgba(0, 240, 255, 0.05);
+        }
+        
+        .article-title {
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .article-meta {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        
+        /* 徽章 */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-primary {
+            background: rgba(0, 240, 255, 0.15);
+            color: var(--primary);
+        }
+        
+        .badge-secondary {
+            background: rgba(123, 47, 255, 0.15);
+            color: var(--secondary);
+        }
+        
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <nav class="bg-white shadow p-4">
-        <div class="max-w-7xl mx-auto flex gap-4">
-            <a href="/" class="text-blue-600">仪表板</a>
-            <a href="/stocks">股票列表</a>
-            <a href="/concepts">概念大全</a>
-            <a href="/search">搜索</a>
+<body>
+    <!-- 背景效果 -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="nav-glass">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <a href="/" class="title-tech text-xl font-bold">CYBER<span style="color: var(--primary)">RESEARCH</span></a>
+                <div class="flex gap-4">
+                    <a href="/" class="nav-link text-sm">仪表板</a>
+                    <a href="/stocks" class="nav-link text-sm">股票列表</a>
+                    <a href="/concepts" class="nav-link text-sm">概念大全</a>
+                    <a href="/search" class="nav-link text-sm">搜索</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="badge badge-primary">LIVE</span>
+                <span class="text-xs text-gray-500 font-mono">{{ code }}</span>
+            </div>
         </div>
     </nav>
-    <main class="max-w-7xl mx-auto p-4">
-        <div class="bg-white rounded shadow p-6 mb-4">
-            <h1 class="text-2xl font-bold">{{ name }} ({{ code }})</h1>
-            <div class="grid grid-cols-4 gap-4 mt-4">
-                <div><div class="text-sm text-gray-500">提及次数</div><div class="text-xl font-bold text-green-600">{{ mention_count }}</div></div>
-                <div><div class="text-sm text-gray-500">板块</div><div class="text-xl font-bold">{{ board }}</div></div>
+    
+    <main class="max-w-7xl mx-auto px-4 py-8 relative z-10">
+        <!-- 头部信息 -->
+        <div class="card fade-in mb-6">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h1 class="text-4xl font-bold title-tech mb-2">{{ name }}</h1>
+                    <p class="text-gray-500 font-mono text-lg">{{ code }} <span class="text-gray-600">|</span> {{ board }}</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-bold" style="color: var(--primary)">{{ mention_count }}</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">提及次数</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-4 gap-4">
+                <div class="stat-box">
+                    <div class="stat-value">{{ mention_count }}</div>
+                    <div class="stat-label">Mentions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" style="color: var(--secondary)">{{ board }}</div>
+                    <div class="stat-label">Board</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" style="color: var(--accent)">{{ core_concepts|length }}</div>
+                    <div class="stat-label">Concepts</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">{{ articles|length }}</div>
+                    <div class="stat-label">Articles</div>
+                </div>
             </div>
         </div>
 
+        <!-- 概念标签 -->
         {% if core_concepts %}
-        <div class="bg-white rounded shadow p-6 mb-4">
-            <h2 class="text-lg font-bold mb-2">🏷️ 核心概念</h2>
-            <div class="flex flex-wrap gap-2">
+        <div class="card fade-in stagger-1 mb-6">
+            <div class="section-title">核心概念标签</div>
+            <div class="flex flex-wrap gap-2 mb-4">
                 {% for c in core_concepts %}
-                <a href="/concept/{{ c }}" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full hover:bg-blue-200 text-sm">{{ c }}</a>
+                <a href="/concept/{{ c }}" class="tag">{{ c }}</a>
                 {% endfor %}
             </div>
             {% if other_concepts %}
-            <div class="mt-3">
-                <button onclick="document.getElementById('other-concepts').classList.toggle('hidden')" class="text-sm text-blue-600 hover:underline">
-                    展开更多概念 ({{ other_concepts|length }} 个) ▼
+            <div class="pt-4 border-t" style="border-color: rgba(255,255,255,0.05)">
+                <button onclick="document.getElementById('other-concepts').classList.toggle('hidden')" class="text-sm text-blue-400 hover:text-blue-300 transition flex items-center gap-2">
+                    <span>展开更多概念 ({{ other_concepts|length }} 个)</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-            </div>
-            <div id="other-concepts" class="hidden mt-3 pt-3 border-t">
-                <div class="text-sm text-gray-500 mb-2">其他概念:</div>
-                <div class="flex flex-wrap gap-2">
-                    {% for c in other_concepts %}
-                    <a href="/concept/{{ c }}" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 text-xs">{{ c }}</a>
-                    {% endfor %}
+                <div id="other-concepts" class="hidden mt-4 pt-4" style="border-top: 1px dashed rgba(255,255,255,0.1)">
+                    <div class="flex flex-wrap gap-2">
+                        {% for c in other_concepts %}
+                        <a href="/concept/{{ c }}" class="tag tag-secondary">{{ c }}</a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             {% endif %}
         </div>
         {% endif %}
 
-        {% if detail_texts %}
-        <div class="bg-white rounded shadow p-6 mb-4">
-            <h2 class="text-lg font-bold mb-2">📝 详情文字</h2>
-            <div class="space-y-3">
-                {% for t in detail_texts %}
-                <div class="border-l-4 border-blue-500 pl-4 py-2 bg-gray-50">
-                    <p class="text-gray-800 whitespace-pre-wrap">{{ t[:500] }}{% if t|length > 500 %}...{% endif %}</p>
+        <!-- 核心业务 -->
+        {% if core_business %}
+        <div class="card fade-in stagger-2 mb-6">
+            <div class="section-title">核心业务</div>
+            <p class="text-gray-300 leading-relaxed">{{ core_business }}</p>
+        </div>
+        {% endif %}
+
+        <!-- 行业地位 -->
+        {% if industry_position %}
+        <div class="card fade-in stagger-2 mb-6">
+            <div class="section-title">行业地位</div>
+            <p class="text-gray-300 leading-relaxed">{{ industry_position }}</p>
+        </div>
+        {% endif %}
+
+        <!-- 催化剂（多来源） -->
+        {% if accident %}
+        <div class="card fade-in stagger-3 mb-6">
+            <div class="section-title">
+                <span style="color: var(--accent)">⚡</span> 催化剂 / 事件驱动
+            </div>
+            <div class="mt-4">
+                {% if '---' in accident %}
+                    {% set parts = accident.split('\n\n---\n\n') %}
+                    {% for part in parts %}
+                        {% if part.strip() %}
+                            {% set cleaned = part.replace('[', '').replace(']', '').split(' ', 1) %}
+                            {% if cleaned|length >= 2 %}
+                                <div class="source-block">
+                                    <div class="source-number">{{ cleaned[0] }}</div>
+                                    <div class="source-content">{{ cleaned[1] }}</div>
+                                </div>
+                                {% if not loop.last %}
+                                <div class="source-divider"></div>
+                                {% endif %}
+                            {% else %}
+                                <div class="source-block">
+                                    <div class="source-content">{{ part }}</div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="source-block">
+                        <div class="source-content">{{ accident }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 投资洞察（多来源） -->
+        {% if insights %}
+        <div class="card fade-in stagger-3 mb-6">
+            <div class="section-title">
+                <span style="color: var(--secondary)">💡</span> 投资洞察
+            </div>
+            <div class="mt-4">
+                {% if '---' in insights %}
+                    {% set parts = insights.split('\n\n---\n\n') %}
+                    {% for part in parts %}
+                        {% if part.strip() %}
+                            {% set cleaned = part.replace('[', '').replace(']', '').split(' ', 1) %}
+                            {% if cleaned|length >= 2 %}
+                                <div class="source-block" style="border-left-color: var(--secondary)">
+                                    <div class="source-number" style="background: linear-gradient(135deg, var(--secondary), var(--accent))">{{ cleaned[0] }}</div>
+                                    <div class="source-content">{{ cleaned[1] }}</div>
+                                </div>
+                                {% if not loop.last %}
+                                <div class="source-divider"></div>
+                                {% endif %}
+                            {% else %}
+                                <div class="source-block" style="border-left-color: var(--secondary)">
+                                    <div class="source-content">{{ part }}</div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="source-block" style="border-left-color: var(--secondary)">
+                        <div class="source-content">{{ insights }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 产业链 -->
+        {% if chain %}
+        <div class="card fade-in stagger-3 mb-6">
+            <div class="section-title">🔗 产业链位置</div>
+            <p class="text-gray-300 leading-relaxed">{{ chain }}</p>
+        </div>
+        {% endif %}
+
+        <!-- 关键指标 -->
+        {% if key_metrics %}
+        <div class="card fade-in stagger-3 mb-6">
+            <div class="section-title">📊 关键指标</div>
+            <p class="text-gray-300 leading-relaxed font-mono text-sm">{{ key_metrics }}</p>
+        </div>
+        {% endif %}
+
+        <!-- 合作伙伴 -->
+        {% if partners %}
+        <div class="card fade-in stagger-3 mb-6">
+            <div class="section-title">🤝 合作伙伴</div>
+            <div class="flex flex-wrap gap-2">
+                {% for p in partners %}
+                <span class="tag tag-secondary">{{ p }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 产品列表 -->
+        {% if products %}
+        <div class="card fade-in stagger-3 mb-6">
+            <div class="section-title">📦 产品/服务</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {% for p in products %}
+                <div class="flex items-center gap-3 p-3 rounded-lg" style="background: rgba(0,0,0,0.2)">
+                    <div class="w-2 h-2 rounded-full" style="background: var(--primary); box-shadow: 0 0 10px var(--primary)"></div>
+                    <span class="text-sm text-gray-300">{{ p }}</span>
                 </div>
                 {% endfor %}
             </div>
         </div>
         {% endif %}
 
+        <!-- 提及文章 -->
         {% if articles %}
-        <div class="bg-white rounded shadow p-6">
-            <h2 class="text-lg font-bold mb-2">📰 提及文章 ({{ articles|length }})</h2>
-            <table class="min-w-full">
-                <thead class="bg-gray-50">
-                    <tr><th class="px-4 py-2 text-left">标题</th><th class="px-4 py-2 text-left">日期</th></tr>
-                </thead>
-                <tbody>
-                    {% for a in articles %}
-                    <tr class="border-t"><td class="px-4 py-2">{{ a.source }}</td><td class="px-4 py-2">{{ a.date }}</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="card fade-in stagger-4">
+            <div class="section-title">📰 提及文章 <span class="text-gray-500">({{ articles|length }})</span></div>
+            <div class="mt-4">
+                {% for a in articles %}
+                <div class="article-item">
+                    <div class="article-title">{{ a.article_title or a.source }}</div>
+                    <div class="article-meta">
+                        <span class="badge badge-secondary">{{ a.date }}</span>
+                        <span class="ml-3">{{ a.source }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         {% endif %}
     </main>
+    
+    <footer class="relative z-10 border-t" style="border-color: var(--border); background: var(--bg-card)">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-gray-500 text-sm">
+            <p>CYBER<span style="color: var(--primary)">RESEARCH</span> © 2026 - AI-Powered Investment Research Platform</p>
+        </div>
+    </footer>
 </body>
 </html>
