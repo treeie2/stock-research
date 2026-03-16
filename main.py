@@ -4,7 +4,7 @@
 """
 
 from flask import Flask, jsonify, render_template, request, send_file
-import json, gzip, os
+import json, gzip, os, requests
 from pathlib import Path
 from datetime import datetime
 
@@ -284,6 +284,61 @@ def clear_edits():
     edit_log = []
     save_edit_log()
     return jsonify({'success': True, 'message': '编辑记录已清空'})
+
+@app.route('/api/market-data')
+def get_market_data():
+    """获取实时行情数据（东方财富 API）"""
+    codes = request.args.get('codes', '').split(',')
+    codes = [c for c in codes if c.strip()]
+    
+    if not codes:
+        return jsonify({'error': '请提供股票代码'}), 400
+    
+    try:
+        # 构建东方财富 API 请求
+        secids = ','.join([f'1.{c}' if c.startswith('6') else f'0.{c}' for c in codes])
+        url = 'https://push2.eastmoney.com/api/qt/ulist/get'
+        params = {
+            'invt': 2,
+            'fltt': 2,
+            'fields': 'f43,f44,f45,f46,f47,f48,f13,f14,f2,f3,f196',  # 价格、涨跌、市值等
+            'secids': secids
+        }
+        
+        resp = requests.get(url, params=params, timeout=5)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        result = {}
+        total_cap = 0
+        
+        if data.get('data') and data['data'].get('diff'):
+            for item in data['data']['diff']:
+                code = item.get('f12')  # 股票代码
+                if code:
+                    price = item.get('f2')  # 最新价
+                    change = item.get('f3')  # 涨跌幅
+                    market_cap = item.get('f46')  # 总市值（元）
+                    
+                    # 转换为亿元
+                    market_cap_yi = market_cap / 100000000 if market_cap else None
+                    
+                    result[code] = {
+                        'price': price,
+                        'change': change,
+                        'marketCap': market_cap_yi
+                    }
+                    
+                    if market_cap_yi:
+                        total_cap += market_cap_yi
+        
+        result['totalCap'] = total_cap
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        print(f"获取行情数据失败：{e}")
+        return jsonify({'error': str(e)}), 500
 
 def update_stock_field(code, field, value):
     """通用函数：更新股票字段"""
