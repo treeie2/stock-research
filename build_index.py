@@ -33,6 +33,26 @@ def clean_text(text: str) -> str:
     text = re.sub(r'\s+', ' ', text)
     return text.strip()
 
+def extract_stock_fields(stock: dict) -> dict:
+    """从股票记录中提取核心字段，支持 llm_summary 嵌套和直接字段两种格式"""
+    # 优先从 llm_summary 获取
+    llm = stock.get('llm_summary', {})
+    
+    # 如果 llm_summary 为空或不存在，尝试直接从股票记录获取（邮件直传格式）
+    if not llm:
+        llm = {
+            'core_business': stock.get('core_business', ''),
+            'insights': stock.get('insights', ''),
+            'products': stock.get('products', []),
+            'industry_position': stock.get('industry_position', ''),
+            'chain': stock.get('chain', ''),
+            'key_metrics': stock.get('key_metrics', ''),
+            'partners': stock.get('partners', []),
+            'accident': stock.get('accident', '')
+        }
+    
+    return llm
+
 def main():
     print("=" * 70)
     print("📊 生成 Railway 搜索索引")
@@ -46,7 +66,7 @@ def main():
     stocks_dict = {}
     for stock in master_data.get('stocks', []):
         code = stock['code']
-        llm = stock.get('llm_summary', {})
+        llm = extract_stock_fields(stock)
         stocks_dict[code] = {
             'name': stock['name'],
             'board': stock.get('market', ''),
@@ -56,8 +76,11 @@ def main():
             'products': llm.get('products', []),
             'core_business': clean_text(llm.get('core_business', '')),
             'industry_position': clean_text(llm.get('industry_position', '')),
+            'chain': clean_text(llm.get('chain', '')),
+            'key_metrics': clean_text(llm.get('key_metrics', '')),
             'partners': llm.get('partners', []),
             'accident': clean_text(llm.get('accident', '')),
+            'insights': clean_text(llm.get('insights', '')),
             'articles': []
         }
     
@@ -123,9 +146,21 @@ def main():
         if stock['industry_position']:
             detail_texts.append(f"行业地位：{stock['industry_position']}")
         
+        # 产业链
+        if stock.get('chain'):
+            detail_texts.append(f"产业链：{stock['chain']}")
+        
+        # 关键指标
+        if stock.get('key_metrics'):
+            detail_texts.append(f"关键指标：{stock['key_metrics']}")
+        
         # 催化剂
         if stock['accident']:
             detail_texts.append(f"催化剂：{stock['accident']}")
+        
+        # 投资洞察
+        if stock.get('insights'):
+            detail_texts.append(f"投资洞察：{stock['insights']}")
         
         # 合作伙伴
         if stock['partners']:
