@@ -14,11 +14,19 @@ SENTIMENT_FILE = DATA_DIR / 'company_mentions.json'
 OUTPUT_FILE = DATA_DIR / 'search_index_full.json.gz'
 
 def clean_text(text: str) -> str:
-    """清理文本中的 Markdown/HTML 格式"""
+    """清理文本中的 Markdown/HTML 格式，保留多来源分隔格式"""
     if not text:
         return ""
     
     import re
+    
+    # 检测是否有多来源内容（已格式化的 [1] [2] 或原始的 |||）
+    has_multi_source = ' ||| ' in text or ('\n\n---\n\n' in text)
+    
+    # 如果是多来源内容，先保护分隔线
+    if has_multi_source:
+        text = text.replace('\n\n---\n\n', '<<<SEPARATOR>>>')
+    
     # 移除 [cite: x, y] 引用标记
     text = re.sub(r'\[cite:\s*\d+(?:,\s*\d+)*\]', '', text)
     # 移除 Markdown 链接 [text](url) → text
@@ -29,8 +37,18 @@ def clean_text(text: str) -> str:
     text = re.sub(r'https?://[^\s\]\)]+', '', text)
     # 移除 HTML 标签
     text = re.sub(r'<[^>]+>', '', text)
-    # 移除多余空白
-    text = re.sub(r'\s+', ' ', text)
+    
+    # 恢复分隔线后再清理空白
+    if has_multi_source:
+        text = text.replace('<<<SEPARATOR>>>', '\n\n---\n\n')
+        # 先保护分隔线
+        text = text.replace('\n\n---\n\n', '<<<SEPARATOR>>>')
+        text = re.sub(r'\s+', ' ', text)
+        text = text.replace('<<<SEPARATOR>>>', '\n\n---\n\n')
+    else:
+        # 移除多余空白
+        text = re.sub(r'\s+', ' ', text)
+    
     return text.strip()
 
 def extract_stock_fields(stock: dict) -> dict:
