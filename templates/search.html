@@ -88,6 +88,13 @@
                                     {{ r.name }}
                                     <span class="text-xs font-mono" style="color: var(--text-dim);">({{ r.code }})</span>
                                 </a>
+                                {% if r.match_fields %}
+                                <div class="mt-1 flex flex-wrap gap-1">
+                                    {% for field in r.match_fields %}
+                                    <span class="text-xs px-2 py-0.5 rounded" style="background: rgba(0, 240, 255, 0.15); color: var(--primary);">{{ field }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
                             </td>
                             <td class="px-4 py-4">
                                 <span class="badge badge-primary">{{ r.mention_count }}</span>

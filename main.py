@@ -117,15 +117,60 @@ def concept_detail(name):
 
 @app.route('/search')
 def search():
-    q = request.args.get('q', '').lower()
+    q = request.args.get('q', '').lower().strip()
     results = []
+    
     if q:
+        # 全文搜索：名称、代码、概念、催化剂、投资洞察、公司概况
         for c, d in stocks.items():
-            if q in d.get('name','').lower() or q in c:
-                results.append({'code': c, 'name': d.get('name',''), 
-                               'mention_count': d.get('mention_count',0),
-                               'concepts': d.get('concepts',[])[:5]})
-        results.sort(key=lambda x: x['mention_count'], reverse=True)
+            score = 0
+            match_fields = []
+            
+            # 精确匹配代码（最高优先级）
+            if q == c:
+                score = 1000
+                match_fields.append('代码')
+            # 匹配名称
+            elif q in d.get('name', '').lower():
+                score = 500
+                match_fields.append('名称')
+            # 匹配概念
+            elif any(q in concept.lower() for concept in d.get('concepts', [])):
+                score = 300
+                match_fields.append('概念')
+            # 匹配催化剂（accident）
+            elif q in d.get('accident', '').lower():
+                score = 200
+                match_fields.append('催化剂')
+            # 匹配投资洞察（insights）
+            elif q in d.get('insights', '').lower():
+                score = 200
+                match_fields.append('投资洞察')
+            # 匹配公司概况（core_business）
+            elif q in d.get('core_business', '').lower():
+                score = 200
+                match_fields.append('公司概况')
+            # 匹配行业地位
+            elif q in d.get('industry_position', '').lower():
+                score = 150
+                match_fields.append('行业地位')
+            # 匹配产业链
+            elif q in d.get('chain', '').lower():
+                score = 150
+                match_fields.append('产业链')
+            
+            if score > 0:
+                results.append({
+                    'code': c,
+                    'name': d.get('name', ''),
+                    'mention_count': d.get('mention_count', 0),
+                    'concepts': d.get('concepts', [])[:5],
+                    'score': score,
+                    'match_fields': match_fields
+                })
+        
+        # 按分数排序，同分按提及次数排序
+        results.sort(key=lambda x: (-x['score'], -x['mention_count']))
     
     # 热门搜索（Top 20）
     top_stocks = sorted([{'code': c, **d} for c, d in stocks.items()], 

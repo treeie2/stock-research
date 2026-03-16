@@ -438,35 +438,7 @@
                 <!-- 显示模式 -->
                 <div id="accident-display">
                     {% if accident and accident|length > 0 %}
-                        {% if '[1]' in accident %}
-                            <!-- 多来源格式：分割显示 -->
-                            {% for i in range(1, 10) %}
-                                {% set marker = '[' + i|string + ']' %}
-                                {% if marker in accident %}
-                                    {% set start = accident.index(marker) + marker|length %}
-                                    {% set next_marker = '[' + (i+1)|string + ']' %}
-                                    {% if next_marker in accident %}
-                                        {% set end = accident.index(next_marker) %}
-                                    {% else %}
-                                        {% set end = accident|length %}
-                                    {% endif %}
-                                    {% set content = accident[start:end].strip() %}
-                                    {% if content %}
-                                    <div class="source-block">
-                                        <div class="flex items-start gap-3">
-                                            <div class="source-number flex-shrink-0">{{ i }}</div>
-                                            <div class="source-content flex-1">{{ content }}</div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <!-- 单来源格式 -->
-                            <div class="source-block">
-                                <div class="source-content">{{ accident }}</div>
-                            </div>
-                        {% endif %}
+                        <div class="multi-source-content" data-field="accident">{{ accident }}</div>
                     {% else %}
                         <div class="text-gray-500 text-sm italic">暂无催化剂信息</div>
                     {% endif %}
@@ -512,34 +484,10 @@
             
             <!-- 显示模式 -->
             <div id="insights-display" class="mt-4 space-y-4">
-                {% if '[1]' in insights %}
-                    <!-- 多来源格式：分割显示 -->
-                    {% for i in range(1, 10) %}
-                        {% set marker = '[' + i|string + ']' %}
-                        {% if marker in insights %}
-                            {% set start = insights.index(marker) + marker|length %}
-                            {% set next_marker = '[' + (i+1)|string + ']' %}
-                            {% if next_marker in insights %}
-                                {% set end = insights.index(next_marker) %}
-                            {% else %}
-                                {% set end = insights|length %}
-                            {% endif %}
-                            {% set content = insights[start:end].strip() %}
-                            {% if content %}
-                            <div class="source-block" style="border-left-color: var(--secondary)">
-                                <div class="flex items-start gap-3">
-                                    <div class="source-number flex-shrink-0" style="background: linear-gradient(135deg, var(--secondary), var(--accent))">{{ i }}</div>
-                                    <div class="source-content flex-1">{{ content }}</div>
-                                </div>
-                            </div>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
+                {% if insights and insights|length > 0 %}
+                    <div class="multi-source-content" data-field="insights">{{ insights }}</div>
                 {% else %}
-                    <!-- 单来源格式 -->
-                    <div class="source-block" style="border-left-color: var(--secondary)">
-                        <div class="source-content">{{ insights }}</div>
-                    </div>
+                    <div class="text-gray-500 text-sm italic">暂无投资洞察</div>
                 {% endif %}
             </div>
             
@@ -1027,6 +975,58 @@
                 status.innerHTML = `<span style="color: #ff4444">❌ 网络错误：${error.message}</span>`;
             }
         }
+    
+    // 页面加载时渲染多源内容
+    document.addEventListener('DOMContentLoaded', function() {
+        renderMultiSource('accident');
+        renderMultiSource('insights');
+        renderMultiSource('core_business');
+    });
+    
+    // 渲染多源内容
+    function renderMultiSource(field) {
+        const container = document.querySelector(`.multi-source-content[data-field="${field}"]`);
+        if (!container) return;
+        
+        const content = container.textContent || container.innerText;
+        if (!content || content.trim().length === 0) return;
+        
+        let html = '';
+        
+        // 检查是否有多源标记 [1], [2], etc.
+        if (content.includes('[1]')) {
+            for (let i = 1; i <= 10; i++) {
+                const marker = `[${i}]`;
+                const markerIndex = content.indexOf(marker);
+                if (markerIndex === -1) continue;
+                
+                const start = markerIndex + marker.length;
+                const nextMarker = `[${i + 1}]`;
+                const end = content.includes(nextMarker) ? content.indexOf(nextMarker, start) : content.length;
+                const part = content.substring(start, end).trim();
+                
+                if (part) {
+                    const borderColor = field === 'accident' ? 'var(--accent)' : (field === 'insights' ? 'var(--secondary)' : 'var(--primary)');
+                    const bgColor = field === 'accident' ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : (field === 'insights' ? 'linear-gradient(135deg, var(--secondary), var(--accent))' : 'var(--primary)');
+                    
+                    html += `<div class="source-block" style="border-left-color: ${borderColor}">
+                        <div class="flex items-start gap-3">
+                            <div class="source-number flex-shrink-0" style="background: ${bgColor}">${i}</div>
+                            <div class="source-content flex-1">${part}</div>
+                        </div>
+                    </div>`;
+                }
+            }
+        } else {
+            // 单源内容
+            const borderColor = field === 'accident' ? 'var(--accent)' : (field === 'insights' ? 'var(--secondary)' : 'var(--primary)');
+            html = `<div class="source-block" style="border-left-color: ${borderColor}">
+                <div class="source-content">${content}</div>
+            </div>`;
+        }
+        
+        container.innerHTML = html;
+    }
     </script>
 </body>
 </html>
