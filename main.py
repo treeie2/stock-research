@@ -292,7 +292,7 @@ def get_market_data():
     codes = [c for c in codes if c.strip()]
     
     if not codes:
-        return jsonify({'error': '请提供股票代码'}), 400
+        return jsonify({'totalCap': 0}), 200
     
     try:
         # 构建东方财富 API 请求
@@ -301,11 +301,17 @@ def get_market_data():
         params = {
             'invt': 2,
             'fltt': 2,
-            'fields': 'f43,f44,f45,f46,f47,f48,f13,f14,f2,f3,f196',  # 价格、涨跌、市值等
-            'secids': secids
+            'fields': 'f43,f44,f45,f46,f47,f48,f13,f14,f2,f3,f196',
+            'secids': secids,
+            'poit': 1
         }
         
-        resp = requests.get(url, params=params, timeout=5)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Referer': 'http://quote.eastmoney.com/'
+        }
+        
+        resp = requests.get(url, params=params, headers=headers, timeout=10)
         resp.raise_for_status()
         data = resp.json()
         
@@ -314,13 +320,11 @@ def get_market_data():
         
         if data.get('data') and data['data'].get('diff'):
             for item in data['data']['diff']:
-                code = item.get('f12')  # 股票代码
+                code = item.get('f12')
                 if code:
-                    price = item.get('f2')  # 最新价
-                    change = item.get('f3')  # 涨跌幅
-                    market_cap = item.get('f46')  # 总市值（元）
-                    
-                    # 转换为亿元
+                    price = item.get('f2')
+                    change = item.get('f3')
+                    market_cap = item.get('f46')
                     market_cap_yi = market_cap / 100000000 if market_cap else None
                     
                     result[code] = {
@@ -333,12 +337,12 @@ def get_market_data():
                         total_cap += market_cap_yi
         
         result['totalCap'] = total_cap
-        
         return jsonify(result)
     
     except Exception as e:
         print(f"获取行情数据失败：{e}")
-        return jsonify({'error': str(e)}), 500
+        # 返回空数据，不让页面崩溃
+        return jsonify({'totalCap': 0, 'error': str(e)}), 200
 
 def update_stock_field(code, field, value):
     """通用函数：更新股票字段"""

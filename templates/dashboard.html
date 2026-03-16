@@ -170,40 +170,46 @@
                 const response = await fetch('/api/market-data?codes=' + codes.join(','));
                 const data = await response.json();
                 
-                // 更新价格和市值
-                codes.forEach(code => {
-                    const info = data[code];
-                    if (info) {
-                        // 价格
+                if (data.error) {
+                    console.warn('行情数据获取失败:', data.error);
+                    // 显示占位符
+                    codes.forEach(code => {
                         const priceEl = document.querySelector(`.market-price[data-code="${code}"]`);
-                        if (priceEl) {
-                            priceEl.innerHTML = info.price ? info.price.toFixed(2) : '-';
-                        }
-                        
-                        // 涨跌
                         const changeEl = document.querySelector(`.market-change[data-code="${code}"]`);
-                        if (changeEl) {
-                            if (info.change) {
+                        const capEl = document.querySelector(`.market-cap[data-code="${code}"]`);
+                        if (priceEl) priceEl.innerHTML = '<span style="color: var(--text-dim)">-</span>';
+                        if (changeEl) changeEl.innerHTML = '<span style="color: var(--text-dim)">-</span>';
+                        if (capEl) capEl.innerHTML = '<span style="color: var(--text-dim)">-</span>';
+                    });
+                } else {
+                    // 更新价格和市值
+                    codes.forEach(code => {
+                        const info = data[code];
+                        if (info) {
+                            const priceEl = document.querySelector(`.market-price[data-code="${code}"]`);
+                            if (priceEl && info.price) {
+                                priceEl.innerHTML = info.price.toFixed(2);
+                            }
+                            
+                            const changeEl = document.querySelector(`.market-change[data-code="${code}"]`);
+                            if (changeEl && info.change !== undefined) {
                                 const color = info.change >= 0 ? '#00ff88' : '#ff4444';
                                 const sign = info.change >= 0 ? '+' : '';
                                 changeEl.innerHTML = `<span style="color: ${color}">${sign}${info.change.toFixed(2)}%</span>`;
-                            } else {
-                                changeEl.innerHTML = '-';
+                            }
+                            
+                            const capEl = document.querySelector(`.market-cap[data-code="${code}"]`);
+                            if (capEl && info.marketCap) {
+                                capEl.innerHTML = info.marketCap.toFixed(1) + '亿';
                             }
                         }
-                        
-                        // 市值
-                        const capEl = document.querySelector(`.market-cap[data-code="${code}"]`);
-                        if (capEl) {
-                            capEl.innerHTML = info.marketCap ? info.marketCap.toFixed(1) + '亿' : '-';
-                        }
+                    });
+                    
+                    // 更新总市值
+                    const totalCapEl = document.getElementById('total-market-cap');
+                    if (totalCapEl && data.totalCap) {
+                        totalCapEl.textContent = data.totalCap.toLocaleString();
                     }
-                });
-                
-                // 更新总市值
-                const totalCapEl = document.getElementById('total-market-cap');
-                if (totalCapEl && data.totalCap) {
-                    totalCapEl.textContent = data.totalCap.toLocaleString();
                 }
                 
                 btn.innerHTML = '✅ 已刷新';
@@ -213,7 +219,7 @@
                 }, 2000);
             } catch (error) {
                 console.error('刷新失败:', error);
-                btn.innerHTML = '❌ 失败';
+                btn.innerHTML = '🔄 刷新';
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
