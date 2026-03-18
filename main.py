@@ -37,9 +37,9 @@ except Exception as e:
 
 @app.route('/')
 def dashboard():
-    top = sorted([{'code': c, **d} for c, d in stocks.items()], 
-                 key=lambda x: x['mention_count'], reverse=True)[:20]
-    for i, s in enumerate(top): s['rank'] = i + 1
+    # 传递所有股票数据（按提及次数排序）
+    all_stocks = sorted([{'code': c, **d} for c, d in stocks.items()], 
+                        key=lambda x: x['mention_count'], reverse=True)
     
     # 计算文章数（安全方式）
     articles = set()
@@ -48,11 +48,10 @@ def dashboard():
             articles.add(f"{code}_{a.get('article_id', '')}")
     
     return render_template('dashboard.html', 
+        stocks=all_stocks,
         total_stocks=len(stocks),
         total_mentions=sum(s.get('mention_count', 0) for s in stocks.values()),
-        total_articles=len(articles),
-        update_time=Path(SEARCH_INDEX_FILE).stat().st_mtime,
-        top_20=top)
+        total_articles=len(articles))
 
 @app.route('/stocks')
 def stocks_list():
