@@ -135,24 +135,34 @@ def search():
             elif any(q in concept.lower() for concept in d.get('concepts', [])):
                 score = 300
                 match_fields.append('概念')
-            # 匹配催化剂（accident）
-            elif q in d.get('accident', '').lower():
+            # 匹配催化剂（accident）- 支持数组和字符串
+            accident = d.get('accident', '')
+            accident_text = ','.join(accident).lower() if isinstance(accident, list) else accident.lower()
+            if q in accident_text:
                 score = 200
                 match_fields.append('催化剂')
-            # 匹配投资洞察（insights）
-            elif q in d.get('insights', '').lower():
+            # 匹配投资洞察（insights）- 支持数组和字符串
+            insights = d.get('insights', '')
+            insights_text = ','.join(insights).lower() if isinstance(insights, list) else insights.lower()
+            if q in insights_text:
                 score = 200
                 match_fields.append('投资洞察')
-            # 匹配公司概况（core_business）
-            elif q in d.get('core_business', '').lower():
+            # 匹配公司概况（core_business）- 支持数组和字符串
+            core_business = d.get('core_business', '')
+            core_business_text = ','.join(core_business).lower() if isinstance(core_business, list) else core_business.lower()
+            if q in core_business_text:
                 score = 200
                 match_fields.append('公司概况')
-            # 匹配行业地位
-            elif q in d.get('industry_position', '').lower():
+            # 匹配行业地位（industry_position）- 支持数组和字符串
+            industry_position = d.get('industry_position', '')
+            industry_position_text = ','.join(industry_position).lower() if isinstance(industry_position, list) else industry_position.lower()
+            if q in industry_position_text:
                 score = 150
                 match_fields.append('行业地位')
-            # 匹配产业链
-            elif q in d.get('chain', '').lower():
+            # 匹配产业链（chain）- 支持数组和字符串
+            chain = d.get('chain', '')
+            chain_text = ','.join(chain).lower() if isinstance(chain, list) else chain.lower()
+            if q in chain_text:
                 score = 150
                 match_fields.append('产业链')
             

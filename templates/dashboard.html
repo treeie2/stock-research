@@ -306,6 +306,29 @@
             font-weight:600;
             font-size:.85rem;
         }
+        .refresh-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 6px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .refresh-btn:hover {
+            background: rgba(139,92,246,.15);
+        }
+        .refresh-btn:active {
+            transform: rotate(180deg);
+        }
+        .refresh-btn.spinning {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
         .col-chg {
             font-family:var(--mono);
             font-weight:600;
@@ -470,7 +493,10 @@
                         <th>股票</th>
                         <th class="col-board">板块</th>
                         <th class="col-concepts">概念</th>
-                        <th class="num" style="min-width:80px;">最新价</th>
+                        <th class="num" style="min-width:80px;">
+                            最新价
+                            <button id="refreshBtn" class="refresh-btn" title="刷新股价" onclick="fetchMarket(true)">🔄</button>
+                        </th>
                         <th class="num" style="min-width:80px;">涨跌幅</th>
                         <th class="num col-cap" style="min-width:76px;">总市值</th>
                         <th class="num col-mention" style="min-width:60px;">提及</th>
@@ -593,9 +619,27 @@
         sortRows('mention');
         
         // ─── Market data ───
-        async function fetchMarket() {
+        let marketLoaded = false;
+        async function fetchMarket(force = false) {
             const codes = rows.map(r => r.dataset.code);
             if(!codes.length) return;
+            
+            const btn = document.getElementById('refreshBtn');
+            
+            // 手动刷新：显示加载状态
+            if(force) {
+                btn?.classList.add('spinning');
+                rows.forEach(r => {
+                    const code = r.dataset.code;
+                    const pEl = document.getElementById(`p-${code}`);
+                    const cEl = document.getElementById(`c-${code}`);
+                    const mcEl = document.getElementById(`mc-${code}`);
+                    if(pEl) pEl.innerHTML = '<span class="loading-price">🔄</span>';
+                    if(cEl) cEl.innerHTML = '<span class="loading-price">—</span>';
+                    if(mcEl) mcEl.innerHTML = '<span style="color:var(--t3)">—</span>';
+                });
+            }
+            
             try {
                 const res = await fetch(`/api/market-data?codes=${codes.join(',')}`);
                 const data = await res.json();
@@ -617,15 +661,27 @@
                     cEl.innerHTML = `<span class="col-chg ${cls}">${sign}${d.change.toFixed(2)}%</span>`;
                     if(mcEl)
                         mcEl.innerHTML = d.marketCap ? `<span class="col-cap">${d.marketCap.toFixed(0)}亿</span>` : '—';
-                    // store chg for sort
                     const row = document.querySelector(`tr[data-code="${code}"]`);
                     if(row) row.dataset.chg = d.change;
                 });
+                marketLoaded = true;
             } catch(e) {
                 console.log('行情获取失败', e);
+                if(force) {
+                    rows.forEach(r => {
+                        const code = r.dataset.code;
+                        const pEl = document.getElementById(`p-${code}`);
+                        const cEl = document.getElementById(`c-${code}`);
+                        if(pEl) pEl.innerHTML = '<span style="color:var(--t3)">失败</span>';
+                        if(cEl) cEl.innerHTML = '<span style="color:var(--t3)">—</span>';
+                    });
+                }
+            } finally {
+                if(force && btn) btn.classList.remove('spinning');
             }
         }
-        fetchMarket();
+        // 3 秒后自动刷新一次
+        setTimeout(() => fetchMarket(false), 3000);
         setInterval(fetchMarket, 60000);
         
         // ─── Search ───
