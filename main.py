@@ -71,34 +71,27 @@ def stock_detail(code):
         return jsonify({'error': '股票不存在'}), 404
     d = stocks[code]
     
-    # 筛选核心概念：按概念热度排序，最多显示 10 个
-    all_concepts = d.get('concepts', [])
-    core_concepts = []
-    other_concepts = []
+    # 构建完整的 stock 对象
+    stock = {
+        'code': code,
+        'name': d.get('name', ''),
+        'board': d.get('board', ''),
+        'industry': d.get('industry', ''),
+        'mention_count': d.get('mention_count', 0),
+        'concepts': d.get('concepts', []),
+        'core_business': d.get('core_business', []),
+        'industry_position': d.get('industry_position', []),
+        'accident': d.get('accident', ''),
+        'insights': d.get('insights', ''),
+        'chain': d.get('chain', []),
+        'key_metrics': d.get('key_metrics', []),
+        'partners': d.get('partners', []),
+        'products': d.get('products', []),
+        'articles': d.get('articles', [])[:20],
+        'detail_texts': d.get('detail_texts', [])[:5]
+    }
     
-    # 按概念包含的股票数量排序（热门概念优先）
-    sorted_concepts = sorted(all_concepts, key=lambda c: len(concepts.get(c, [])), reverse=True)
-    
-    # 前 10 个为核心概念，其余为其他概念
-    core_concepts = sorted_concepts[:10]
-    other_concepts = sorted_concepts[10:]
-    
-    return render_template('stock_detail.html', 
-        code=code, 
-        name=d.get('name',''), 
-        board=d.get('board',''),
-        mention_count=d.get('mention_count',0),
-        concepts=core_concepts,  # 模板用 concepts
-        core_business=d.get('core_business', ''),
-        industry_position=d.get('industry_position', ''),
-        accident=d.get('accident', ''),
-        insights=d.get('insights', ''),
-        chain=d.get('chain', ''),
-        key_metrics=d.get('key_metrics', ''),
-        partners=d.get('partners', []),
-        products=d.get('products', []), 
-        articles=d.get('articles', [])[:20],
-        detail_texts=d.get('detail_texts', [])[:5])
+    return render_template('stock_detail.html', stock=stock)
 
 @app.route('/concepts')
 def concepts_list():
